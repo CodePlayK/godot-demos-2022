@@ -1,23 +1,23 @@
 extends PanelContainer
 
 # The character stats to display and update with this interface.
-var character: Character setget set_character
+var character: Character : set = set_character
 
 var _ignore_value_change := false
 
-onready var _player_position_label := $MarginContainer/VBoxContainer/PlayerPositionLabel as Label
+@onready var _player_position_label := $MarginContainer/VBoxContainer/PlayerPositionLabel as Label
 
-onready var _run_speed_slider := $MarginContainer/VBoxContainer/HBoxContainer/RunSpeedSlider as HSlider
-onready var _strength_spinbox := $MarginContainer/VBoxContainer/HBoxContainer2/StrengthSpinbox as SpinBox
-onready var _endurance_spinbox := $MarginContainer/VBoxContainer/HBoxContainer3/EnduranceSpinbox as SpinBox
-onready var _intelligence_spinbox := $MarginContainer/VBoxContainer/HBoxContainer4/IntelligenceSpinbox as SpinBox
+@onready var _run_speed_slider := $MarginContainer/VBoxContainer/HBoxContainer/RunSpeedSlider as HSlider
+@onready var _strength_spinbox := $MarginContainer/VBoxContainer/HBoxContainer2/StrengthSpinbox as SpinBox
+@onready var _endurance_spinbox := $MarginContainer/VBoxContainer/HBoxContainer3/EnduranceSpinbox as SpinBox
+@onready var _intelligence_spinbox := $MarginContainer/VBoxContainer/HBoxContainer4/IntelligenceSpinbox as SpinBox
 
 
 func _ready() -> void:
-	_run_speed_slider.connect("value_changed", self, "_on_value_changed")
-	_strength_spinbox.connect("value_changed", self, "_on_value_changed")
-	_endurance_spinbox.connect("value_changed", self, "_on_value_changed")
-	_intelligence_spinbox.connect("value_changed", self, "_on_value_changed")
+	_run_speed_slider.connect("value_changed",Callable(self,"_on_value_changed"))
+	_strength_spinbox.connect("value_changed",Callable(self,"_on_value_changed"))
+	_endurance_spinbox.connect("value_changed",Callable(self,"_on_value_changed"))
+	_intelligence_spinbox.connect("value_changed",Callable(self,"_on_value_changed"))
 
 
 func update_player_position(global_position: Vector2) -> void:

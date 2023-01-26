@@ -3,14 +3,14 @@ extends Control
 const UIItemScene := preload("UIItem.tscn")
 
 # This menu displays the content of this inventory resource. Clicking the 
-# buttons to add or remove items directly removes them from this resource.
-var inventory: Inventory = null setget set_inventory
+# buttons to add or remove_at items directly removes them from this resource.
+var inventory: Inventory = null : set = set_inventory
 
-onready var _item_grid := $VBoxContainer/ItemGrid as GridContainer
-onready var _ui_tooltip := $UITooltip
+@onready var _item_grid := $VBoxContainer/ItemGrid as GridContainer
+@onready var _ui_tooltip := $UITooltip
 
-onready var _add_item_button := $VBoxContainer/HBoxContainer/AddItemButton as Button
-onready var _remove_item_button := $VBoxContainer/HBoxContainer/RemoveItemButton as Button
+@onready var _add_item_button := $VBoxContainer/HBoxContainer/AddItemButton as Button
+@onready var _remove_item_button := $VBoxContainer/HBoxContainer/RemoveItemButton as Button
 
 
 func _ready() -> void:
@@ -21,13 +21,13 @@ func _ready() -> void:
 		test_inventory.add_item("sword", 2)
 		set_inventory(test_inventory)
 
-	_add_item_button.connect("pressed", self, "_add_random_item")
-	_remove_item_button.connect("pressed", self, "_remove_random_item")
+	_add_item_button.connect("pressed",Callable(self,"_add_random_item"))
+	_remove_item_button.connect("pressed",Callable(self,"_remove_random_item"))
 
 
 func set_inventory(new_inventory: Inventory) -> void:
 	if inventory != new_inventory:
-		new_inventory.connect("changed", self, "_update_items_display")
+		new_inventory.connect("changed",Callable(self,"_update_items_display"))
 
 	inventory = new_inventory
 	_update_items_display()
@@ -38,10 +38,10 @@ func _update_items_display() -> void:
 		node.queue_free()
 	
 	for item_unique_id in inventory.items:
-		var ui_item: UIItem = UIItemScene.instance()
+		var ui_item: UIItem = UIItemScene.instantiate()
 		_item_grid.add_child(ui_item)
 		ui_item.display_item(item_unique_id, inventory.get_amount(item_unique_id))
-		ui_item.connect("tooltip_requested", self, "_on_tooltip_requested", [ui_item])
+		ui_item.connect("tooltip_requested",Callable(self,"_on_tooltip_requested").bind(ui_item))
 
 
 func _on_tooltip_requested(ui_item: UIItem) -> void:

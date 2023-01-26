@@ -5,16 +5,16 @@ signal tooltip_requested
 
 var item_unique_id := ""
 
-onready var texture_rect := $MarginContainer/HBoxContainer/TextureRect
-onready var amount_label := $MarginContainer/HBoxContainer/AmountLabel
-onready var name_label := $MarginContainer/HBoxContainer/NameLabel
-onready var tooltip_timer := $TooltipTimer
+@onready var texture_rect := $MarginContainer/HBoxContainer/TextureRect
+@onready var amount_label := $MarginContainer/HBoxContainer/AmountLabel
+@onready var name_label := $MarginContainer/HBoxContainer/NameLabel
+@onready var tooltip_timer := $TooltipTimer
 
 
 func _ready() -> void:
-	tooltip_timer.connect("timeout", self, "_request_tooltip")
-	connect("mouse_entered", tooltip_timer, "start")
-	connect("mouse_exited", tooltip_timer, "stop")
+	tooltip_timer.connect("timeout",Callable(self,"_request_tooltip"))
+	connect("mouse_entered",Callable(tooltip_timer,"start"))
+	connect("mouse_exited",Callable(tooltip_timer,"stop"))
 
 
 func display_item(unique_id: String, amount: int) -> void:

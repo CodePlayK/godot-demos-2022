@@ -22,18 +22,17 @@ static func _load_items() -> Array:
 	var item_files := []
 	var items_folder := "res://resources/items"
 
-	var directory := Directory.new()
-	var can_continue := directory.open(items_folder) == OK
+	var can_continue := DirAccess.open(items_folder)
 	if not can_continue:
-		print_debug('Could not open directory "%s"' % [items_folder])
+		print_debug('Could not open DirAccess "%s"' % [items_folder])
 		return item_files
 
-	directory.list_dir_begin(true, true)
-	var file_name := directory.get_next()
+	can_continue.list_dir_begin() # TODOGODOT4 fill missing arguments https://github.com/godotengine/godot/pull/40547
+	var file_name := can_continue.get_next()
 	while file_name != "":
 		if file_name.get_extension() == "tres":
-			item_files.append(items_folder.plus_file(file_name))
-		file_name = directory.get_next()
+			item_files.append(items_folder.path_join(file_name))
+		file_name = can_continue.get_next()
 
 	var item_resources := []
 	for path in item_files:

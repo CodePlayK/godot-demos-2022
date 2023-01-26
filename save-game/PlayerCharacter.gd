@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
 const DRAG_FACTOR := 0.15
 const DIRECTION_TO_FRAME := {
@@ -9,13 +9,12 @@ const DIRECTION_TO_FRAME := {
 	Vector2.UP: 4,
 }
 
-var stats: Character setget set_stats
+var stats: Character : set = set_stats
 
-var velocity := Vector2.ZERO
 
-onready var sprite := $Godot
-onready var smoke_particles := $SmokeParticles
-onready var camera := $Camera2D
+@onready var sprite := $Godot
+@onready var smoke_particles := $SmokeParticles
+@onready var camera := $Camera2D
 
 
 func _ready() -> void:
@@ -29,7 +28,10 @@ func _physics_process(delta: float) -> void:
 	
 	var steering := desired_velocity - velocity
 	velocity += steering * DRAG_FACTOR
-	velocity = move_and_slide(velocity, Vector2.ZERO)
+	set_velocity(velocity)
+	set_up_direction(Vector2.UP)
+	move_and_slide()
+	velocity = velocity
 
 	var direction_key := direction.round()
 	direction_key.x = abs(direction_key.x)

@@ -1,0 +1,5 @@
+res://SaveAsResourceDemo.tscn
+res://interface/theme.tres
+res://interface/UISavePanel.tscn
+res://resources/SaveGame.gd
+res://PlayerCharacter.gd

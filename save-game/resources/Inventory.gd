@@ -9,7 +9,7 @@ extends Resource
 # items' unique ids and values represent the owned amount.
 #
 # Note that dictionaries preserve their order in GDScript.
-export var items := {}
+@export var items := {}
 
 
 func add_item(unique_id: String, amount := 1) -> void:
@@ -30,7 +30,7 @@ func get_amount(item_unique_id: String) -> int:
 
 func remove_item(item_unique_id: String, amount := 1) -> void:
 	if not item_unique_id in items:
-		printerr("Trying to remove item %s but the inventory doesn't have it." % item_unique_id)
+		printerr("Trying to remove_at item %s but the inventory doesn't have it." % item_unique_id)
 		return
 
 	items[item_unique_id] -= amount

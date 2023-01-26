@@ -4,15 +4,15 @@ extends Node2D
 
 var _save := SaveGameAsJSON.new()
 
-onready var _player := $PlayerCharacter
-onready var _ui_inventory := $UI/UIInventory
-onready var _ui_save_panel := $UI/UISavePanel
-onready var _ui_info_display := $UI/UIInfoDisplay
+@onready var _player := $PlayerCharacter
+@onready var _ui_inventory := $UI/UIInventory
+@onready var _ui_save_panel := $UI/UISavePanel
+@onready var _ui_info_display := $UI/UIInfoDisplay
 
 
 func _ready() -> void:
-	_ui_save_panel.connect("reload_requested", self, "_create_or_load_save")
-	_ui_save_panel.connect("save_requested", self, "_save_game")
+	_ui_save_panel.connect("reload_requested",Callable(self,"_create_or_load_save"))
+	_ui_save_panel.connect("save_requested",Callable(self,"_save_game"))
 	
 	# And the start of the game or when pressing the load button, we call this
 	# function. It loads the save data if it exists, otherwise, it creates a 

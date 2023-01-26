@@ -15,15 +15,15 @@ extends Resource
 const SAVE_GAME_BASE_PATH := "user://save"
 
 # Use this to detect old player saves and update their data.
-export var version := 1
+@export var version := 1
 
 # We directly reference the characters stats and inventory in the save game resource.
 # When saving this resource, they'll get saved alongside it.
-export var character: Resource = Character.new()
-export var inventory: Resource = Inventory.new()
+@export var character: Resource = Character.new()
+@export var inventory: Resource = Inventory.new()
 
-export var map_name := ""
-export var global_position := Vector2.ZERO
+@export var map_name := ""
+@export var global_position := Vector2.ZERO
 
 
 # The next three functions are just to keep the save API inside of the SaveGame resource.
@@ -31,7 +31,8 @@ export var global_position := Vector2.ZERO
 # web. Please see the README and check out the deciated video.
 # For a safe alternative, see the function write/load_as_json() below.
 func write_savegame() -> void:
-	ResourceSaver.save(get_save_path(), self)
+	print(get_save_path())
+	ResourceSaver.save(self,get_save_path())
 
 
 static func save_exists() -> bool:
@@ -40,47 +41,7 @@ static func save_exists() -> bool:
 
 static func load_savegame() -> Resource:
 	var save_path := get_save_path()
-	if ResourceLoader.has_cached(save_path):
-		# Once the resource caching bug is fixed, you will only need this line of code to load the save game.
-		return ResourceLoader.load(save_path, "", true)
-
-	# /!\ Workaround for bug https://github.com/godotengine/godot/issues/59686
-	# Without that, sub-resources will not reload from the saved data.
-	# We copy the SaveGame resource's data to a temporary file, load that file
-	# as a resource, and make it take over the save game.
-
-	# We first load the save game resource's content as a byte array and store it.
-	var file := File.new()
-	if file.open(save_path, File.READ) != OK:
-		printerr("Couldn't read file " + save_path)
-		return null
-
-	var data := file.get_buffer(file.get_len())
-	file.close()
-
-	# Then, we generate a random file path that's not in Godot's cache.
-	var tmp_file_path := make_random_path()
-	while ResourceLoader.has_cached(tmp_file_path):
-		tmp_file_path = make_random_path()
-
-	# We write a copy of the save game to that temporary file path.
-	if file.open(tmp_file_path, File.WRITE) != OK:
-		printerr("Couldn't write file " + tmp_file_path)
-		return null
-
-	file.store_buffer(data)
-	file.close()
-
-	# We load the temporary file as a resource.
-	var save = ResourceLoader.load(tmp_file_path, "", true)
-	# And make it take over the save path for the next time the player
-	# saves.
-	save.take_over_path(save_path)
-
-	# We delete the temporary file.
-	var directory := Directory.new()
-	directory.remove(tmp_file_path)
-	return save
+	return ResourceLoader.load(save_path,"",0)
 
 
 static func make_random_path() -> String:

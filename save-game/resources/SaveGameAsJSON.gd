@@ -1,5 +1,5 @@
 class_name SaveGameAsJSON
-extends Reference
+extends RefCounted
 
 const SAVE_GAME_PATH := "user://save.json"
 
@@ -11,7 +11,7 @@ var inventory: Resource = Inventory.new()
 var map_name := ""
 var global_position := Vector2.ZERO
 
-var _file := File.new()
+var _file := FileAccess.open(SAVE_GAME_PATH, FileAccess.WRITE)
 
 
 func save_exists() -> bool:
@@ -19,8 +19,8 @@ func save_exists() -> bool:
 
 
 func write_savegame() -> void:
-	var error := _file.open(SAVE_GAME_PATH, File.WRITE)
-	if error != OK:
+	var error := _file
+	if error ==null:
 		printerr("Could not open the file %s. Aborting save operation. Error code: %s" % [SAVE_GAME_PATH, error])
 		return
 
@@ -44,21 +44,23 @@ func write_savegame() -> void:
 		"inventory": inventory.items,
 	}
 	
-	var json_string := JSON.print(data)
+	var json_string := JSON.stringify(data)
 	_file.store_string(json_string)
 	_file.close()
 
 
 func load_savegame() -> void:
-	var error := _file.open(SAVE_GAME_PATH, File.READ)
-	if error != OK:
+	var error := FileAccess.open(SAVE_GAME_PATH, FileAccess.READ)
+	if error ==null:
 		printerr("Could not open the file %s. Aborting load operation. Error code: %s" % [SAVE_GAME_PATH, error])
 		return
 
 	var content := _file.get_as_text()
 	_file.close()
 
-	var data: Dictionary = JSON.parse(content).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(content)
+	var data: Dictionary = test_json_conv.get_data()
 	global_position = Vector2(data.global_position.x, data.global_position.y)
 	map_name = data.map_name
 
